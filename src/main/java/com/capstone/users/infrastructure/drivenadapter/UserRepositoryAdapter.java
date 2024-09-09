@@ -1,7 +1,11 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
+import com.capstone.users.domain.model.User;
+import com.capstone.users.domain.model.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * The UserRepositoryAdapter class serves as an adapter between the domain layer and the persistence layer (driven adapter).
@@ -14,5 +18,20 @@ import org.springframework.stereotype.Component;
  */
 @AllArgsConstructor
 @Component
-public class UserRepositoryAdapter {
+public class UserRepositoryAdapter implements UserRepository {
+
+    private final UserMySQLRepository userMySQLRepository;
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userMySQLRepository.findByLogin(username)
+                .map(UserData::toUser)
+                .map(Optional::of)
+                .orElse(null);
+    }
+
+    @Override
+    public User save(User newUser) {
+        return userMySQLRepository.save(UserData.fromUser(newUser)).toUser();
+    }
 }
