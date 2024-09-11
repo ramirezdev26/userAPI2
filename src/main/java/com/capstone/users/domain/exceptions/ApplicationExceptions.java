@@ -17,4 +17,8 @@ public class ApplicationExceptions {
      * Throws a UserAlreadyExistException when there is an entity with the same login.
      */
     public static void userAlreadyExistException(){throw new UserAlreadyExistsException();}
+
+    public static void invalidUserDataException(String message) {
+        throw new InvalidUserDataException(message);
+    }
 }

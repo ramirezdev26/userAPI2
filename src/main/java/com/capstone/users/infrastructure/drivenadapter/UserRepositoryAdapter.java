@@ -1,10 +1,12 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
+import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**
@@ -43,6 +45,24 @@ public class UserRepositoryAdapter implements UserRepository {
     public Optional<User> findByLogin(String login) {
         return userMySQLRepository.findByLogin(login)
                 .map(this::mapTo);
+    }
+
+    @Override
+    public Optional<User> findById(String id) {
+        return userMySQLRepository.findById(id)
+                .map(this::mapTo);
+    }
+
+    @Override
+    public User update(User user) {
+        Optional<UserData> existingUserData = userMySQLRepository.findByLogin(user.getLogin());
+
+        if (existingUserData.isEmpty()) {
+            ApplicationExceptions.customersNotFound();
+        }
+        UserData userData = mapFrom(user);
+
+        return mapTo(userMySQLRepository.save(userData));
     }
 
 

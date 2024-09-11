@@ -4,10 +4,7 @@ import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -20,5 +17,11 @@ public class UserController {
     public ResponseEntity<User> register(@RequestBody User user) {
         userService.save(user);
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping(value = "/update/{login}")
+    public ResponseEntity<User> update(@PathVariable String login, @RequestBody User user) {
+        User updatedUser = userService.update(login, user);
+        return ResponseEntity.ok(updatedUser);
     }
 }
