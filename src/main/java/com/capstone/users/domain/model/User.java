@@ -1,10 +1,8 @@
 package com.capstone.users.domain.model;
 
-import com.capstone.users.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 /**
  * The User class represents the core user entity in the domain.

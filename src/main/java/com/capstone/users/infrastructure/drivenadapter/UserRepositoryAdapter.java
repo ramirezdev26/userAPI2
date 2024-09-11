@@ -6,7 +6,6 @@ import com.capstone.users.domain.model.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**
@@ -55,10 +54,10 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public User update(User user) {
-        Optional<UserData> existingUserData = userMySQLRepository.findByLogin(user.getLogin());
+        Optional<UserData> existingUserData = userMySQLRepository.findById(user.getId());
 
         if (existingUserData.isEmpty()) {
-            ApplicationExceptions.customersNotFound();
+            ApplicationExceptions.userNotFound();
         }
         UserData userData = mapFrom(user);
 

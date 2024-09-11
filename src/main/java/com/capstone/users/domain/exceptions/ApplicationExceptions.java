@@ -18,6 +18,18 @@ public class ApplicationExceptions {
      */
     public static void userAlreadyExistException(){throw new UserAlreadyExistsException();}
 
+    /**
+     * Throws a UserNotFound exception when the requested user entity cannot be located in the system.
+     */
+    public static void userNotFound(){
+        throw new UserNotFound();
+    }
+
+    /**
+     * Throws an InvalidUserDataException when invalid or empty user data is encountered.
+     *
+     * @param message A message describing the specific invalid user data issue.
+     */
     public static void invalidUserDataException(String message) {
         throw new InvalidUserDataException(message);
     }

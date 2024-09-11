@@ -3,6 +3,7 @@ package com.capstone.users.infrastructure.entrypoint.advice;
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.InvalidUserDataException;
 import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.UserNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -41,6 +42,14 @@ public class ApplicationExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex, problem -> {
             problem.setType(URI.create("http://capstone.com/users/invalid-user-data"));
             problem.setTitle("Invalid User Data");
+        });
+    }
+
+    @ExceptionHandler(UserNotFound.class)
+    public ProblemDetail handleException(UserNotFound ex) {
+        return build(HttpStatus.NOT_FOUND, ex, problem -> {
+            problem.setType(URI.create("http://capstone.com/users/user-not-found"));
+            problem.setTitle("User Not Found");
         });
     }
 }

@@ -1,6 +1,9 @@
 package com.capstone.users.domain.service;
 
+import com.capstone.users.domain.exceptions.CustomersNotFoundException;
+import com.capstone.users.domain.exceptions.InvalidUserDataException;
 import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.UserNotFound;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,5 +117,71 @@ class UserServiceTest {
         assertEquals(login, result.getLogin());
         assertEquals(name, result.getName());
         assertEquals(password, result.getPassword());
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when user fields are empty.
+     * <p>
+     * Ensures that updating a user with empty fields triggers an {@link InvalidUserDataException}.
+     */
+    @Test
+    void TestUpdateUser_WhenFieldsAreEmpty_ShouldThrowInvalidUserDataException() {
+        String id = "userId";
+        User existingUser = User.builder().id(id).login("testUser").name("testName").password("testPassword").build();
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+
+        User userToUpdate = User.builder().id(id).login("").name("").password("").build();
+
+        assertThrows(InvalidUserDataException.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the user does not exist.
+     * <p>
+     * Ensures that trying to update a non-existent user triggers a {@link CustomersNotFoundException}.
+     */
+    @Test
+    void TestUpdateUser_WhenUserDoesNotExist_ShouldThrowCustomersNotFoundException() {
+        String id = "userId";
+        User userToUpdate = User.builder().id(id).login("testUser").name("testName").password("testPassword").build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFound.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when a user exists.
+     * <p>
+     * Ensures that the user is updated successfully with new data,
+     * and verifies that the repository's update method is called correctly.
+     */
+    @Test
+    void TestUpdateUser_WhenUserExists_ShouldUpdateUserSuccessfully() {
+
+        String id = "userId";
+        String oldName = "oldName";
+        String oldLogin = "oldLogin";
+        String oldPassword = "oldPassword";
+
+        User existingUser = User.builder().id(id).login(oldLogin).name(oldName).password(oldPassword).build();
+
+        String newName = "newName";
+        String newLogin = "newLogin";
+        String newPassword = "newPassword";
+
+        User updatedUser = User.builder().id(id).login(newLogin).name(newName).password(newPassword).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByLogin(newLogin)).thenReturn(Optional.empty());
+        when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User result = userService.update(id, updatedUser);
+
+        verify(userRepository, times(1)).update(result);
+
+        assertEquals(newLogin, result.getLogin());
+        assertEquals(newName, result.getName());
+        assertEquals(newPassword, result.getPassword());
     }
 }
