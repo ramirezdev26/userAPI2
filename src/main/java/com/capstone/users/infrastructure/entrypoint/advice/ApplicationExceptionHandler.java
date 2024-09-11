@@ -1,6 +1,7 @@
 package com.capstone.users.infrastructure.entrypoint.advice;
 
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
+import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +18,14 @@ public class ApplicationExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex, problem -> {
             problem.setType(URI.create("http://capstone.com/users/customer-not-found"));
             problem.setTitle("Customer Not Found");
+        });
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ProblemDetail handleException(UserAlreadyExistsException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex, problem -> {
+            problem.setType(URI.create("http://capstone.com/users/user-already-exist"));
+            problem.setTitle("User Already Exist");
         });
     }
 

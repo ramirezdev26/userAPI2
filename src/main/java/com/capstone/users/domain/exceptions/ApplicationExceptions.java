@@ -13,4 +13,8 @@ public class ApplicationExceptions {
         throw new CustomersNotFoundException();
     }
 
+    /**
+     * Throws a UserAlreadyExistException when there is an entity with the same login.
+     */
+    public static void userAlreadyExistException(){throw new UserAlreadyExistsException();}
 }
