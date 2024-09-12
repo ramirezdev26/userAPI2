@@ -1,6 +1,6 @@
 package com.capstone.users.domain.service;
 
-import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +78,7 @@ class UserServiceTest {
      * a {@link UserAlreadyExistsException} is thrown.
      */
     @Test
-    void TestSaveUser_WhenLoginExists_ShouldReturnAnException() {
+    void TestSaveUser_WhenLoginExists_ShouldThrowAnException() {
         String name = "testName";
         String existingLogin = "testUser";
         String password = "testPassword";
@@ -98,8 +98,7 @@ class UserServiceTest {
      * the correct data.
      */
     @Test
-    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully()
-    {
+    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully() {
         String name = "testName";
         String login = "testUser";
         String password = "testPassword";

@@ -1,7 +1,8 @@
 package com.capstone.users.infrastructure.entrypoint.advice;
 
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
-import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,6 +27,14 @@ public class ApplicationExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, ex, problem -> {
             problem.setType(URI.create("http://capstone.com/users/user-already-exist"));
             problem.setTitle("User Already Exist");
+        });
+    }
+
+    @ExceptionHandler(UserEmptyDataException.class)
+    public ProblemDetail handleException(UserEmptyDataException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex, problem -> {
+            problem.setType(URI.create("http://capstone.com/users-empty-data"));
+            problem.setTitle("The user cannot have empty data");
         });
     }
 

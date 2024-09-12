@@ -1,4 +1,4 @@
-package com.capstone.users.domain.exceptions;
+package com.capstone.users.domain.exceptions.userExceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
 
