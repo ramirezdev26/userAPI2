@@ -184,4 +184,48 @@ class UserServiceTest {
         assertEquals(newName, result.getName());
         assertEquals(newPassword, result.getPassword());
     }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the login already exists.
+     * <p>
+     * Ensures that trying to update a user with a login that is already used by another user
+     * triggers a {@link UserAlreadyExistsException}.
+     */
+    @Test
+    void TestUpdateUser_WhenLoginAlreadyExists_ShouldThrowUserAlreadyExistsException() {
+        String id = "userId";
+        String existingLogin = "existingUser";
+        User existingUser = User.builder().id(id).login("oldLogin").name("oldName").password("oldPassword").build();
+        User userWithSameLogin = User.builder().id("anotherId").login(existingLogin).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByLogin(existingLogin)).thenReturn(Optional.of(userWithSameLogin));
+
+        User userToUpdate = User.builder().id(id).login(existingLogin).name("newName").password("newPassword").build();
+
+        assertThrows(UserAlreadyExistsException.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the password is null.
+     * <p>
+     * Ensures that updating a user with a null password triggers an {@link InvalidUserDataException}.
+     * The existing password should remain unchanged if the password is not provided.
+     */
+    @Test
+    void TestUpdateUser_WhenPasswordIsNull_ShouldKeepExistingPassword() {
+        String id = "userId";
+        String oldLogin = "testUser";
+        String oldPassword = "oldPassword";
+        User existingUser = User.builder().id(id).login(oldLogin).name("oldName").password(oldPassword).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+
+        User userToUpdate = User.builder().id(id).login(oldLogin).name("newName").password(null).build();
+
+        when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThrows(InvalidUserDataException.class, () -> userService.update(id, userToUpdate));
+
+    }
 }
