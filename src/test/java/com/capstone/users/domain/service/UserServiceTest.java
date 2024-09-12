@@ -1,6 +1,7 @@
 package com.capstone.users.domain.service;
 
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,5 +114,47 @@ class UserServiceTest {
         assertEquals(login, result.getLogin());
         assertEquals(name, result.getName());
         assertEquals(password, result.getPassword());
+    }
+
+    @Test
+    void TestSaveUser_WhenUserNameIsEmpty_ShouldThrowUserEmptyDataException() {
+        String login = "testUser";
+        String password = "testPassword";
+        User user = User.builder().login(login).name("").password(password).build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void TestSaveUser_WhenUserLoginIsEmpty_ShouldThrowUserEmptyDataException() {
+        String name = "testName";
+        String password = "testPassword";
+        User user = User.builder().login("").name(name).password(password).build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void TestSaveUser_WhenUserPasswordIsEmpty_ShouldThrowUserEmptyDataException() {
+        String name = "testName";
+        String login = "testUser";
+        User user = User.builder().login(login).name(name).password("").build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void TestSaveUser_WhenUserDataAreEmpty_ShouldThrowUserEmptyDataException() {
+        User user = User.builder().login("").name("").password("").build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
     }
 }
