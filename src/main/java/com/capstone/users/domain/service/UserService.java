@@ -3,6 +3,7 @@ package com.capstone.users.domain.service;
 import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
@@ -53,6 +54,19 @@ public class UserService {
                 .login(user.getLogin())
                 .password(user.getPassword())
                 .build());
+    }
+
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id The ID of the user to delete.
+     * @throws UserNotFound If the user with the given ID does not exist.
+     */
+    public void deleteById(String id) {
+        if (userRepository.findById(id).isEmpty()) {
+            ApplicationExceptions.userNotFound();
+        }
+        userRepository.deleteById(id);
     }
 
     /**

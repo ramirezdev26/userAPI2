@@ -45,6 +45,16 @@ public class UserRepositoryAdapter implements UserRepository {
                 .map(this::mapTo);
     }
 
+    @Override
+    public Optional<User> findById(String id) {
+        return userMySQLRepository.findById(id)
+            .map(this::mapTo);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        userMySQLRepository.deleteById(id);
+    }
 
     /**
      * Converts the UserData entity into a User domain model object.

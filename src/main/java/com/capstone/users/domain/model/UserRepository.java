@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface UserRepository {
     User save(User user);
     Optional<User> findByLogin(String login);
+    Optional<User> findById(String id);
+    void deleteById(String id);
 }
