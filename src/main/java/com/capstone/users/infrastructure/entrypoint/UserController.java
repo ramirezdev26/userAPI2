@@ -1,7 +1,11 @@
 package com.capstone.users.infrastructure.entrypoint;
 
+import com.capstone.users.domain.model.User;
+import com.capstone.users.domain.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class UserController {
 
-    @PostMapping(value = "/register")
-    public String register() {
-        return "Register from secure endpoint";
-    }
+    private UserService userService;
 
+    @PostMapping(value = "/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        userService.save(user);
+        return ResponseEntity.ok(user);
+    }
 }

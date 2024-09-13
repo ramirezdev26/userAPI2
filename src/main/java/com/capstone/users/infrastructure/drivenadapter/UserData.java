@@ -1,10 +1,7 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
-import com.capstone.users.domain.model.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
 
 /**
  * The UserData class represents the database entity for user information.
@@ -19,6 +16,7 @@ import jakarta.persistence.Table;
  * - login: The login credential for the user.
  * - password: The user's password (stored in plain text here but should ideally be hashed and salted).
  */
+@Data
 @Entity
 @Table(name="users")
 public class UserData {
@@ -30,13 +28,4 @@ public class UserData {
     private String login;
     @Column
     private String password;
-
-    /**
-     * Converts the UserData entity into a User domain model object.
-     *
-     * @return A User domain model object with the data from this entity.
-     */
-    public User toUser() {
-        return new User(id, name, login, password);
-    }
 }
