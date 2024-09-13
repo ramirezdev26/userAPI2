@@ -2,8 +2,9 @@ package com.capstone.users.domain.service;
 
 import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
-import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
-import com.capstone.users.domain.exceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
@@ -52,6 +53,8 @@ public class UserService {
      * @throws UserAlreadyExistsException If a user with the same login already exists.
      */
     public User save(User user) {
+        validateUserEmptyData(user);
+
         if (findByLogin(user.getLogin()).isPresent()) {
             ApplicationExceptions.userAlreadyExistException();
         }
@@ -90,21 +93,30 @@ public class UserService {
         return userRepository.update(existingUser);
     }
 
+    /**
+     * <p>
+     * This method checks that the `name`, `login` and `password` fields
+     * of the provided `User` object are not empty or null.
+     * <p>
+     *
+     * @param user The User object to be validated.
+     * @throws UserEmptyDataException If any of the required fields are null or empty.
+     */
     private void validateUserEmptyData(User user)
     {
         if (StringUtils.isNullOrEmpty(user.getName()))
         {
-            ApplicationExceptions.invalidUserDataException("User name cannot be empty");
+            ApplicationExceptions.userEmptyDataException("User name cannot be empty");
         }
 
         if (StringUtils.isNullOrEmpty(user.getLogin()))
         {
-            ApplicationExceptions.invalidUserDataException("User login cannot be empty");
+            ApplicationExceptions.userEmptyDataException("User login cannot be empty");
         }
 
         if (StringUtils.isNullOrEmpty(user.getPassword()))
         {
-            ApplicationExceptions.invalidUserDataException("User password cannot be empty");
+            ApplicationExceptions.userEmptyDataException("User password cannot be empty");
         }
     }
 }

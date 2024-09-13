@@ -1,9 +1,9 @@
 package com.capstone.users.infrastructure.entrypoint.advice;
 
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
-import com.capstone.users.domain.exceptions.InvalidUserDataException;
-import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
-import com.capstone.users.domain.exceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,17 +31,11 @@ public class ApplicationExceptionHandler {
         });
     }
 
-    private ProblemDetail build(HttpStatus status, Exception ex, Consumer<ProblemDetail> consumer) {
-        var problem = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
-        consumer.accept(problem);
-        return problem;
-    }
-
-    @ExceptionHandler(InvalidUserDataException.class)
-    public ProblemDetail handleException(InvalidUserDataException ex) {
+    @ExceptionHandler(UserEmptyDataException.class)
+    public ProblemDetail handleException(UserEmptyDataException ex) {
         return build(HttpStatus.BAD_REQUEST, ex, problem -> {
-            problem.setType(URI.create("http://capstone.com/users/invalid-user-data"));
-            problem.setTitle("Invalid User Data");
+            problem.setType(URI.create("http://capstone.com/users-empty-data"));
+            problem.setTitle("The user cannot have empty data");
         });
     }
 
@@ -51,5 +45,11 @@ public class ApplicationExceptionHandler {
             problem.setType(URI.create("http://capstone.com/users/user-not-found"));
             problem.setTitle("User Not Found");
         });
+    }
+
+    private ProblemDetail build(HttpStatus status, Exception ex, Consumer<ProblemDetail> consumer) {
+        var problem = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
+        consumer.accept(problem);
+        return problem;
     }
 }

@@ -1,5 +1,9 @@
 package com.capstone.users.domain.exceptions;
 
+import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+
 /**
  * The ApplicationExceptions class acts as a centralized location for custom domain-specific exceptions.
  * It provides methods to throw exceptions, allowing for consistent and reusable exception handling throughout the system.
@@ -26,11 +30,8 @@ public class ApplicationExceptions {
     }
 
     /**
-     * Throws an InvalidUserDataException when invalid or empty user data is encountered.
-     *
-     * @param message A message describing the specific invalid user data issue.
+     * Trows a UserEmptyDataException when some user data is empty (name, login, password).
      */
-    public static void invalidUserDataException(String message) {
-        throw new InvalidUserDataException(message);
-    }
+    public static void userEmptyDataException(String message){throw new UserEmptyDataException(message);}
 }
+

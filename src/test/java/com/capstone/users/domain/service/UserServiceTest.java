@@ -1,12 +1,13 @@
 package com.capstone.users.domain.service;
 
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
-import com.capstone.users.domain.exceptions.InvalidUserDataException;
-import com.capstone.users.domain.exceptions.UserAlreadyExistsException;
-import com.capstone.users.domain.exceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
+import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -119,10 +120,53 @@ class UserServiceTest {
         assertEquals(password, result.getPassword());
     }
 
+    @Test
+    void TestSaveUser_WhenUserNameIsEmpty_ShouldThrowUserEmptyDataException() {
+        String login = "testUser";
+        String password = "testPassword";
+        User user = User.builder().login(login).name("").password(password).build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void TestSaveUser_WhenUserLoginIsEmpty_ShouldThrowUserEmptyDataException() {
+        String name = "testName";
+        String password = "testPassword";
+        User user = User.builder().login("").name(name).password(password).build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void TestSaveUser_WhenUserPasswordIsEmpty_ShouldThrowUserEmptyDataException() {
+        String name = "testName";
+        String login = "testUser";
+        User user = User.builder().login(login).name(name).password("").build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void TestSaveUser_WhenUserDataAreEmpty_ShouldThrowUserEmptyDataException() {
+        User user = User.builder().login("").name("").password("").build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.save(user));
+
+        verifyNoInteractions(userRepository);
+    }
+
+
     /**
      * Tests the behavior of {@link UserService#update(String, User)} when user fields are empty.
      * <p>
-     * Ensures that updating a user with empty fields triggers an {@link InvalidUserDataException}.
+     * Ensures that updating a user with empty fields triggers an {@link UserEmptyDataException}.
      */
     @Test
     void TestUpdateUser_WhenFieldsAreEmpty_ShouldThrowInvalidUserDataException() {
@@ -132,7 +176,7 @@ class UserServiceTest {
 
         User userToUpdate = User.builder().id(id).login("").name("").password("").build();
 
-        assertThrows(InvalidUserDataException.class, () -> userService.update(id, userToUpdate));
+        assertThrows(UserEmptyDataException.class, () -> userService.update(id, userToUpdate));
     }
 
     /**
@@ -209,7 +253,7 @@ class UserServiceTest {
     /**
      * Tests the behavior of {@link UserService#update(String, User)} when the password is null.
      * <p>
-     * Ensures that updating a user with a null password triggers an {@link InvalidUserDataException}.
+     * Ensures that updating a user with a null password triggers an {@link UserEmptyDataException}.
      * The existing password should remain unchanged if the password is not provided.
      */
     @Test
@@ -225,7 +269,7 @@ class UserServiceTest {
 
         when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        assertThrows(InvalidUserDataException.class, () -> userService.update(id, userToUpdate));
+        assertThrows(UserEmptyDataException.class, () -> userService.update(id, userToUpdate));
 
     }
 }

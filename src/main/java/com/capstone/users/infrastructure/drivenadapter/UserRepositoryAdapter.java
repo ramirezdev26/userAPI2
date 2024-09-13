@@ -64,7 +64,6 @@ public class UserRepositoryAdapter implements UserRepository {
         return mapTo(userMySQLRepository.save(userData));
     }
 
-
     /**
      * Converts the UserData entity into a User domain model object.
      *
