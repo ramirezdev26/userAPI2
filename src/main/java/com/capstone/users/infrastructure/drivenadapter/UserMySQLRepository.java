@@ -1,7 +1,10 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
+import com.capstone.users.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * The UserMySQLRepository interface provides the necessary methods to perform CRUD operations on UserData entities.
@@ -15,4 +18,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserMySQLRepository extends JpaRepository<UserData, String> {
+    Optional<UserData> findByLogin(String login);
 }

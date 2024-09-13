@@ -1,6 +1,5 @@
 package com.capstone.users.domain.model;
 
-import com.capstone.users.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,26 +26,5 @@ public class User {
     private String id;
     private String name;
     private String login;
-
     private String password;
-
-    public User cloneFrom(User refUser) {
-        User clonedUser = new User(id, name, login, password);
-        if (StringUtils.isNullOrEmpty(clonedUser.getId())) {
-            clonedUser.setId(refUser.getId());
-        }
-
-        if (StringUtils.isNullOrEmpty(clonedUser.getLogin())) {
-            clonedUser.setLogin(refUser.getLogin());
-        }
-
-        if (StringUtils.isNullOrEmpty(clonedUser.getName())) {
-            clonedUser.setName(refUser.getName());
-        }
-
-        if (StringUtils.isNullOrEmpty(clonedUser.getPassword())) {
-            clonedUser.setPassword(refUser.getPassword());
-        }
-        return clonedUser;
-    }
 }
