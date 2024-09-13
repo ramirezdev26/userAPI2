@@ -82,7 +82,7 @@ class UserServiceTest {
      * a {@link UserAlreadyExistsException} is thrown.
      */
     @Test
-    void TestSaveUser_WhenLoginExists_ShouldReturnAnException() {
+    void TestSaveUser_WhenLoginExists_ShouldThrowAnException() {
         String name = "testName";
         String existingLogin = "testUser";
         String password = "testPassword";
@@ -102,8 +102,7 @@ class UserServiceTest {
      * the correct data.
      */
     @Test
-    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully()
-    {
+    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully() {
         String name = "testName";
         String login = "testUser";
         String password = "testPassword";
