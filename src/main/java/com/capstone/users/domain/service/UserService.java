@@ -63,6 +63,9 @@ public class UserService {
      * @throws UserNotFound If the user with the given ID does not exist.
      */
     public void deleteById(String id) {
+        if (id == null) {
+            ApplicationExceptions.idUserIsNull("User ID cannot be null");
+        }
         if (userRepository.findById(id).isEmpty()) {
             ApplicationExceptions.userNotFound();
         }

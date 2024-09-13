@@ -37,4 +37,13 @@ public class ApplicationExceptions {
     public static void userEmptyDataException(String message) {
         throw new UserEmptyDataException(message);
     }
+
+    /**
+     * Throws an IllegalArgumentException when the user ID is null.
+     *
+     * @param message A message describing the reason why the user ID is null.
+     */
+    public static void idUserIsNull(String message) {
+        throw new IllegalArgumentException(message);
+    }
 }
