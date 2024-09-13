@@ -3,7 +3,7 @@ package com.capstone.users.infrastructure.entrypoint.advice;
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
-import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,8 +39,8 @@ public class ApplicationExceptionHandler {
         });
     }
 
-    @ExceptionHandler(UserNotFound.class)
-    public ProblemDetail handleException(UserNotFound ex) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ProblemDetail handleException(UserNotFoundException ex) {
         return build(HttpStatus.NOT_FOUND, ex, problem -> {
             problem.setType(URI.create("http://capstone.com/users/user-not-found"));
             problem.setTitle("User Not Found");

@@ -2,7 +2,7 @@ package com.capstone.users.domain.exceptions;
 
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
-import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 
 /**
  * The ApplicationExceptions class acts as a centralized location for custom domain-specific exceptions.
@@ -25,8 +25,8 @@ public class ApplicationExceptions {
     /**
      * Throws a UserNotFound exception when the requested user entity cannot be located in the system.
      */
-    public static void userNotFound(){
-        throw new UserNotFound();
+    public static void userNotFoundException(){
+        throw new UserNotFoundException();
     }
 
     /**

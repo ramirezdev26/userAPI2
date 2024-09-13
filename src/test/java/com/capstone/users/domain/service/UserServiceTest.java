@@ -3,11 +3,10 @@ package com.capstone.users.domain.service;
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
-import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -82,7 +81,7 @@ class UserServiceTest {
      * a {@link UserAlreadyExistsException} is thrown.
      */
     @Test
-    void TestSaveUser_WhenLoginExists_ShouldThrowAnException() {
+    void TestSaveUser_WhenLoginExists_ShouldReturnAnException() {
         String name = "testName";
         String existingLogin = "testUser";
         String password = "testPassword";
@@ -102,7 +101,8 @@ class UserServiceTest {
      * the correct data.
      */
     @Test
-    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully() {
+    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully()
+    {
         String name = "testName";
         String login = "testUser";
         String password = "testPassword";
@@ -190,7 +190,7 @@ class UserServiceTest {
 
         when(userRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFound.class, () -> userService.update(id, userToUpdate));
+        assertThrows(UserNotFoundException.class, () -> userService.update(id, userToUpdate));
     }
 
     /**

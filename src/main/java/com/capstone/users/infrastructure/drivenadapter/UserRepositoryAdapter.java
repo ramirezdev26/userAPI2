@@ -57,7 +57,7 @@ public class UserRepositoryAdapter implements UserRepository {
         Optional<UserData> existingUserData = userMySQLRepository.findById(user.getId());
 
         if (existingUserData.isEmpty()) {
-            ApplicationExceptions.userNotFound();
+            ApplicationExceptions.userNotFoundException();
         }
         UserData userData = mapFrom(user);
 

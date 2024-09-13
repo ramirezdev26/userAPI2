@@ -4,7 +4,7 @@ import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
-import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
@@ -81,7 +81,7 @@ public class UserService {
        validateUserEmptyData(updatedUser);
 
        User existingUser = findById(id)
-                .orElseThrow(UserNotFound::new);
+                .orElseThrow(UserNotFoundException::new);
        if (!existingUser.getLogin().equals(updatedUser.getLogin()) && findByLogin(updatedUser.getLogin()).isPresent()) {
             ApplicationExceptions.userAlreadyExistException();
         }

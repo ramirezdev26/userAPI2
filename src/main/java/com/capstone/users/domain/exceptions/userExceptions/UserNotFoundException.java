@@ -1,10 +1,10 @@
 package com.capstone.users.domain.exceptions.userExceptions;
 
-public class UserNotFound extends RuntimeException {
+public class UserNotFoundException extends RuntimeException {
 
     private static final String MESSAGE = "User is not found";
 
-    public UserNotFound() {
+    public UserNotFoundException() {
         super(MESSAGE);
     }
 
