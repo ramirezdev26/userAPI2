@@ -1,5 +1,6 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
+import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,23 @@ public class UserRepositoryAdapter implements UserRepository {
                 .map(this::mapTo);
     }
 
+    @Override
+    public Optional<User> findById(String id) {
+        return userMySQLRepository.findById(id)
+                .map(this::mapTo);
+    }
+
+    @Override
+    public User update(User user) {
+        Optional<UserData> existingUserData = userMySQLRepository.findById(user.getId());
+
+        if (existingUserData.isEmpty()) {
+            ApplicationExceptions.userNotFoundException();
+        }
+        UserData userData = mapFrom(user);
+
+        return mapTo(userMySQLRepository.save(userData));
+    }
 
     /**
      * Converts the UserData entity into a User domain model object.

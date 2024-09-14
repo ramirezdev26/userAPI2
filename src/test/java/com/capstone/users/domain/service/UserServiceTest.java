@@ -1,7 +1,9 @@
 package com.capstone.users.domain.service;
 
+import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +81,7 @@ class UserServiceTest {
      * a {@link UserAlreadyExistsException} is thrown.
      */
     @Test
-    void TestSaveUser_WhenLoginExists_ShouldThrowAnException() {
+    void TestSaveUser_WhenLoginExists_ShouldReturnAnException() {
         String name = "testName";
         String existingLogin = "testUser";
         String password = "testPassword";
@@ -99,7 +101,8 @@ class UserServiceTest {
      * the correct data.
      */
     @Test
-    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully() {
+    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully()
+    {
         String name = "testName";
         String login = "testUser";
         String password = "testPassword";
@@ -156,5 +159,116 @@ class UserServiceTest {
         assertThrows(UserEmptyDataException.class, () -> userService.save(user));
 
         verifyNoInteractions(userRepository);
+    }
+
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when user fields are empty.
+     * <p>
+     * Ensures that updating a user with empty fields triggers an {@link UserEmptyDataException}.
+     */
+    @Test
+    void TestUpdateUser_WhenFieldsAreEmpty_ShouldThrowInvalidUserDataException() {
+        String id = "userId";
+        User existingUser = User.builder().id(id).login("testUser").name("testName").password("testPassword").build();
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+
+        User userToUpdate = User.builder().id(id).login("").name("").password("").build();
+
+        assertThrows(UserEmptyDataException.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the user does not exist.
+     * <p>
+     * Ensures that trying to update a non-existent user triggers a {@link CustomersNotFoundException}.
+     */
+    @Test
+    void TestUpdateUser_WhenUserDoesNotExist_ShouldThrowCustomersNotFoundException() {
+        String id = "userId";
+        User userToUpdate = User.builder().id(id).login("testUser").name("testName").password("testPassword").build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when a user exists.
+     * <p>
+     * Ensures that the user is updated successfully with new data,
+     * and verifies that the repository's update method is called correctly.
+     */
+    @Test
+    void TestUpdateUser_WhenUserExists_ShouldUpdateUserSuccessfully() {
+
+        String id = "userId";
+        String oldName = "oldName";
+        String oldLogin = "oldLogin";
+        String oldPassword = "oldPassword";
+
+        User existingUser = User.builder().id(id).login(oldLogin).name(oldName).password(oldPassword).build();
+
+        String newName = "newName";
+        String newLogin = "newLogin";
+        String newPassword = "newPassword";
+
+        User updatedUser = User.builder().id(id).login(newLogin).name(newName).password(newPassword).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByLogin(newLogin)).thenReturn(Optional.empty());
+        when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User result = userService.update(id, updatedUser);
+
+        verify(userRepository, times(1)).update(result);
+
+        assertEquals(newLogin, result.getLogin());
+        assertEquals(newName, result.getName());
+        assertEquals(newPassword, result.getPassword());
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the login already exists.
+     * <p>
+     * Ensures that trying to update a user with a login that is already used by another user
+     * triggers a {@link UserAlreadyExistsException}.
+     */
+    @Test
+    void TestUpdateUser_WhenLoginAlreadyExists_ShouldThrowUserAlreadyExistsException() {
+        String id = "userId";
+        String existingLogin = "existingUser";
+        User existingUser = User.builder().id(id).login("oldLogin").name("oldName").password("oldPassword").build();
+        User userWithSameLogin = User.builder().id("anotherId").login(existingLogin).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByLogin(existingLogin)).thenReturn(Optional.of(userWithSameLogin));
+
+        User userToUpdate = User.builder().id(id).login(existingLogin).name("newName").password("newPassword").build();
+
+        assertThrows(UserAlreadyExistsException.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the password is null.
+     * <p>
+     * Ensures that updating a user with a null password triggers an {@link UserEmptyDataException}.
+     * The existing password should remain unchanged if the password is not provided.
+     */
+    @Test
+    void TestUpdateUser_WhenPasswordIsNull_ShouldKeepExistingPassword() {
+        String id = "userId";
+        String oldLogin = "testUser";
+        String oldPassword = "oldPassword";
+        User existingUser = User.builder().id(id).login(oldLogin).name("oldName").password(oldPassword).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+
+        User userToUpdate = User.builder().id(id).login(oldLogin).name("newName").password(null).build();
+
+        when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThrows(UserEmptyDataException.class, () -> userService.update(id, userToUpdate));
+
     }
 }
