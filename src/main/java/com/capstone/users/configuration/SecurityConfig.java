@@ -20,7 +20,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest ->
                         authRequest
-                                .requestMatchers("api/v1/users/auth/**").permitAll()
+                                .requestMatchers("api/v1/users/auth/**",  "/swagger-ui/**",
+                                        "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
