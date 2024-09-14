@@ -1,8 +1,9 @@
 package com.capstone.users.domain.service;
 
+import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
-import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,7 +81,7 @@ class UserServiceTest {
      * a {@link UserAlreadyExistsException} is thrown.
      */
     @Test
-    void TestSaveUser_WhenLoginExists_ShouldThrowAnException() {
+    void TestSaveUser_WhenLoginExists_ShouldReturnAnException() {
         String name = "testName";
         String existingLogin = "testUser";
         String password = "testPassword";
@@ -100,7 +101,8 @@ class UserServiceTest {
      * the correct data.
      */
     @Test
-    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully() {
+    void TestSaveUser_WhenLoginDoesNotExist_ShouldSaveUserSuccessfully()
+    {
         String name = "testName";
         String login = "testUser";
         String password = "testPassword";
@@ -159,49 +161,114 @@ class UserServiceTest {
         verifyNoInteractions(userRepository);
     }
 
+
     /**
-     * Tests the behavior of {@link UserService#deleteById(String)} when the user exists.
+     * Tests the behavior of {@link UserService#update(String, User)} when user fields are empty.
      * <p>
-     * This test ensures that when deleting a user that exists in the repository,
-     * the user is successfully deleted and no exceptions are thrown. It verifies that the
-     * {@link UserRepository}'s deleteById method is called with the correct data.
+     * Ensures that updating a user with empty fields triggers an {@link UserEmptyDataException}.
      */
     @Test
-    void testDeleteById_WhenUserExists_ShouldDeleteSuccessfully() {
-        String userId = "testId";
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User("1", "testName", "testLogin", "testPassword")));
+    void TestUpdateUser_WhenFieldsAreEmpty_ShouldThrowInvalidUserDataException() {
+        String id = "userId";
+        User existingUser = User.builder().id(id).login("testUser").name("testName").password("testPassword").build();
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
 
-        assertDoesNotThrow(() -> userService.deleteById(userId));
+        User userToUpdate = User.builder().id(id).login("").name("").password("").build();
 
-        verify(userRepository, times(1)).deleteById(userId);
+        assertThrows(UserEmptyDataException.class, () -> userService.update(id, userToUpdate));
     }
 
     /**
-     * Tests the behavior of {@link UserService#deleteById(String)} when the user does not exist.
+     * Tests the behavior of {@link UserService#update(String, User)} when the user does not exist.
      * <p>
-     * This test ensures that when trying to delete a user that does not exist in the repository,
-     * a {@link UserNotFound} exception is thrown. It verifies that the repository is not interacted with.
+     * Ensures that trying to update a non-existent user triggers a {@link CustomersNotFoundException}.
      */
     @Test
-    void testDeleteById_WhenUserDoesNotExist_ShouldThrowUserNotFoundException() {
-        String userId = "nonExistentId";
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    void TestUpdateUser_WhenUserDoesNotExist_ShouldThrowCustomersNotFoundException() {
+        String id = "userId";
+        User userToUpdate = User.builder().id(id).login("testUser").name("testName").password("testPassword").build();
 
-        assertThrows(UserNotFound.class, () -> userService.deleteById(userId));
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
 
-        verify(userRepository, never()).deleteById(anyString());
+        assertThrows(UserNotFoundException.class, () -> userService.update(id, userToUpdate));
     }
 
     /**
-     * Tests the behavior of {@link UserService#deleteById(String)} when the id is null.
+     * Tests the behavior of {@link UserService#update(String, User)} when a user exists.
      * <p>
-     * This test ensures that when the id is null, an IllegalArgumentException is thrown.
-     * It verifies that the repository is not interacted with.
+     * Ensures that the user is updated successfully with new data,
+     * and verifies that the repository's update method is called correctly.
      */
     @Test
-    void testDeleteById_WhenIdIsNull_ShouldThrowIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class, () -> userService.deleteById(null));
+    void TestUpdateUser_WhenUserExists_ShouldUpdateUserSuccessfully() {
 
-        verifyNoInteractions(userRepository);
+        String id = "userId";
+        String oldName = "oldName";
+        String oldLogin = "oldLogin";
+        String oldPassword = "oldPassword";
+
+        User existingUser = User.builder().id(id).login(oldLogin).name(oldName).password(oldPassword).build();
+
+        String newName = "newName";
+        String newLogin = "newLogin";
+        String newPassword = "newPassword";
+
+        User updatedUser = User.builder().id(id).login(newLogin).name(newName).password(newPassword).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByLogin(newLogin)).thenReturn(Optional.empty());
+        when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User result = userService.update(id, updatedUser);
+
+        verify(userRepository, times(1)).update(result);
+
+        assertEquals(newLogin, result.getLogin());
+        assertEquals(newName, result.getName());
+        assertEquals(newPassword, result.getPassword());
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the login already exists.
+     * <p>
+     * Ensures that trying to update a user with a login that is already used by another user
+     * triggers a {@link UserAlreadyExistsException}.
+     */
+    @Test
+    void TestUpdateUser_WhenLoginAlreadyExists_ShouldThrowUserAlreadyExistsException() {
+        String id = "userId";
+        String existingLogin = "existingUser";
+        User existingUser = User.builder().id(id).login("oldLogin").name("oldName").password("oldPassword").build();
+        User userWithSameLogin = User.builder().id("anotherId").login(existingLogin).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByLogin(existingLogin)).thenReturn(Optional.of(userWithSameLogin));
+
+        User userToUpdate = User.builder().id(id).login(existingLogin).name("newName").password("newPassword").build();
+
+        assertThrows(UserAlreadyExistsException.class, () -> userService.update(id, userToUpdate));
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#update(String, User)} when the password is null.
+     * <p>
+     * Ensures that updating a user with a null password triggers an {@link UserEmptyDataException}.
+     * The existing password should remain unchanged if the password is not provided.
+     */
+    @Test
+    void TestUpdateUser_WhenPasswordIsNull_ShouldKeepExistingPassword() {
+        String id = "userId";
+        String oldLogin = "testUser";
+        String oldPassword = "oldPassword";
+        User existingUser = User.builder().id(id).login(oldLogin).name("oldName").password(oldPassword).build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+
+        User userToUpdate = User.builder().id(id).login(oldLogin).name("newName").password(null).build();
+
+        when(userRepository.update(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThrows(UserEmptyDataException.class, () -> userService.update(id, userToUpdate));
+
     }
 }

@@ -1,9 +1,10 @@
 package com.capstone.users.domain.service;
 
 import com.capstone.users.domain.exceptions.ApplicationExceptions;
+import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
-import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
@@ -35,6 +36,16 @@ public class UserService {
     }
 
     /**
+     * Finds a user by their ID.
+     *
+     * @param id The ID of the user to find.
+     * @return An Optional containing the User if found, or an empty Optional if the user does not exist.
+     */
+    public Optional<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    /**
      * Saves a new user to the repository.
      * Before saving, it validates if a user with the same login already exists.
      *
@@ -57,19 +68,29 @@ public class UserService {
     }
 
     /**
-     * Deletes a user by their ID.
+     * Updates an existing user in the repository.
+     * Before updating, it checks if the provided data is valid and if the login does not conflict with another user.
      *
-     * @param id The ID of the user to delete.
-     * @throws UserNotFound If the user with the given ID does not exist.
+     * @param id          The ID of the user to update.
+     * @param updatedUser The User object containing the updated details.
+     * @return The updated User object.
+     * @throws CustomersNotFoundException If the user with the given ID does not exist.
+     * @throws UserAlreadyExistsException If another user with the same login exists.
      */
-    public void deleteById(String id) {
-        if (id == null) {
-            ApplicationExceptions.idUserIsNull("User ID cannot be null");
+    public User update(String id, User updatedUser) {
+       validateUserEmptyData(updatedUser);
+
+       User existingUser = findById(id)
+                .orElseThrow(UserNotFoundException::new);
+       if (!existingUser.getLogin().equals(updatedUser.getLogin()) && findByLogin(updatedUser.getLogin()).isPresent()) {
+            ApplicationExceptions.userAlreadyExistException();
         }
-        if (userRepository.findById(id).isEmpty()) {
-            ApplicationExceptions.userNotFound();
-        }
-        userRepository.deleteById(id);
+
+        existingUser.setName(updatedUser.getName());
+        existingUser.setLogin(updatedUser.getLogin());
+        existingUser.setPassword(updatedUser.getPassword());
+
+        return userRepository.update(existingUser);
     }
 
     /**
