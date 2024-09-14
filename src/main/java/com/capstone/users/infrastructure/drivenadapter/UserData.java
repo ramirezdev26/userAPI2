@@ -18,7 +18,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name="users")
+@Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"login"})})
 public class UserData {
     @Id
     private String id;

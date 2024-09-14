@@ -9,6 +9,7 @@ import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,7 +25,6 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
     /**
      * Finds a user by their login.
      *
