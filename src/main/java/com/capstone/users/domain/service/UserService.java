@@ -8,6 +8,7 @@ import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,8 +42,12 @@ public class UserService {
      * @param id The ID of the user to find.
      * @return An Optional containing the User if found, or an empty Optional if the user does not exist.
      */
-    public Optional<User> findById(String id) {
-        return userRepository.findById(id);
+    public User findById(String id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    public List<User> findAll(){
+      return  userRepository.findAll();
     }
 
     /**
@@ -80,8 +85,7 @@ public class UserService {
     public User update(String id, User updatedUser) {
        validateUserEmptyData(updatedUser);
 
-       User existingUser = findById(id)
-                .orElseThrow(UserNotFoundException::new);
+       User existingUser = findById(id);
        if (!existingUser.getLogin().equals(updatedUser.getLogin()) && findByLogin(updatedUser.getLogin()).isPresent()) {
             ApplicationExceptions.userAlreadyExistException();
         }

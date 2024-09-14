@@ -3,6 +3,8 @@ package com.capstone.users.infrastructure.drivenadapter;
 import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +52,11 @@ public class UserRepositoryAdapter implements UserRepository {
     public Optional<User> findById(String id) {
         return userMySQLRepository.findById(id)
                 .map(this::mapTo);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userMySQLRepository.findAll().stream().map(this::mapTo).collect(Collectors.toList());
     }
 
     @Override
