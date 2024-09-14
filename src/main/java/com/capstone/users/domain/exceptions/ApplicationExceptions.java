@@ -30,13 +30,6 @@ public class ApplicationExceptions {
     }
 
     /**
-     * Trows a UserEmptyDataException when some user data is empty (name, login, password).
-     */
-    public static void userNotFound(){
-        throw new UserNotFound();
-    }
-
-    /**
      * Throws an InvalidUserDataException when invalid or empty user data is encountered.
      *
      * @param message A message describing the specific invalid user data issue.

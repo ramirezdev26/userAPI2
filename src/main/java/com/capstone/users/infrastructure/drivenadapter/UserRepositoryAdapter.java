@@ -64,6 +64,11 @@ public class UserRepositoryAdapter implements UserRepository {
         return mapTo(userMySQLRepository.save(userData));
     }
 
+    @Override
+    public void deleteById(String id) {
+        userMySQLRepository.deleteById(id);
+    }
+
     /**
      * Converts the UserData entity into a User domain model object.
      *
