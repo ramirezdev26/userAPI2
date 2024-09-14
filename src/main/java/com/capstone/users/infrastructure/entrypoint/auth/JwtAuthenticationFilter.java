@@ -21,6 +21,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtService jwtService;
   private final UserDetailsService userDetailsService;
+
+  /**
+   * Filters the HTTP request and performs authentication based on the JWT token.
+   *
+   * @param  request            the HTTP servlet request
+   * @param  response           the HTTP servlet response
+   * @param  filterChain        the filter chain
+   * @throws ServletException   if an exception occurs during the filter chain processing
+   * @throws IOException        if an I/O error occurs
+   */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
@@ -46,6 +56,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
+  /**
+   * Retrieves the JWT token from the HTTP request header.
+   *
+   * @param  request  the HTTP servlet request object
+   * @return          the JWT token extracted from the request header, or null if not found
+   */
   private String getTokenFromRequest(HttpServletRequest request) {
     final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 

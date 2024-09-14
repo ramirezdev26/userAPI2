@@ -20,16 +20,31 @@ public class UserAuth implements UserDetails {
   private String login;
   private String password;
 
+  /**
+   * Returns an empty collection of granted authorities.
+   *
+   * @return an empty collection of GrantedAuthority objects
+   */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of();
   }
 
+  /**
+   * Retrieves the password for the user.
+   *
+   * @return the password for the user
+   */
   @Override
   public String getPassword() {
     return password;
   }
 
+  /**
+   * Retrieves the username of the user.
+   *
+   * @return the username of the user
+   */
   @Override
   public String getUsername() {
     return login;

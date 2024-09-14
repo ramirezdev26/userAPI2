@@ -24,6 +24,13 @@ public class AuthService {
   private final AuthenticationManager authManager;
   private final PasswordEncoder passwordEncoder;
 
+  /**
+   * Authenticates a user with the provided login request and returns an authentication response containing a JWT token.
+   *
+   * @param  loginResquest  the login request containing the user's login and password
+   * @return                an authentication response containing a JWT token
+   * @throws AuthenticationException if the authentication fails
+   */
   public AuthResponse login(LoginResquest loginResquest) {
 
     try {
@@ -44,6 +51,12 @@ public class AuthService {
         .build();
   }
 
+  /**
+   * Registers a new user with the provided request and returns an authentication response containing a JWT token.
+   *
+   * @param  request  the user registration request containing the user's id, name, login, and password
+   * @return          an authentication response containing a JWT token
+   */
   public AuthResponse register(User request) {
     User user = userService.save(User.builder()
             .id(request.getId())
