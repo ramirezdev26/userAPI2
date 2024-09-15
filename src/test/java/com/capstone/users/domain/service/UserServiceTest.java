@@ -275,34 +275,35 @@ class UserServiceTest {
     /**
      * Tests the behavior of {@link UserService#deleteById(String)} when the user exists.
      * <p>
-     * This test ensures that when deleting a user that exists in the repository,
-     * the user is successfully deleted and no exceptions are thrown. It verifies that the
-     * {@link UserRepository}'s deleteById method is called with the correct data.
+     * Ensures that when a user with the given ID exists in the repository,
+     * the method successfully deletes the user and returns a success message.
+     * The success message should include the ID of the deleted user.
      */
     @Test
-    void testDeleteById_WhenUserExists_ShouldDeleteSuccessfully() {
-        String userId = "testId";
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User("1", "testName", "testLogin", "testPassword")));
+    void testDeleteById_WhenUserExists_ShouldDeleteSuccessfullyAndReturnMessage() {
+      String userId = "testId";
+      when(userRepository.findById(userId)).thenReturn(Optional.of(new User("1", "testUser", "testName", "testPassword")));
 
-        assertDoesNotThrow(() -> userService.deleteById(userId));
+      String result = userService.deleteById(userId);
 
-        verify(userRepository, times(1)).deleteById(userId);
+      assertEquals("User with ID: " + userId + " deleted successfully", result);
+      verify(userRepository, times(1)).deleteById(userId);
     }
 
     /**
      * Tests the behavior of {@link UserService#deleteById(String)} when the user does not exist.
      * <p>
-     * This test ensures that when trying to delete a user that does not exist in the repository,
-     * a {@link UserNotFound} exception is thrown. It verifies that the repository is not interacted with.
+     * Ensures that when a user with the given ID does not exist in the repository,
+     * the method throws a {@link UserNotFoundException} and does not attempt to delete the user.
      */
     @Test
     void testDeleteById_WhenUserDoesNotExist_ShouldThrowUserNotFoundException() {
-        String userId = "nonExistentId";
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+      String userId = "nonExistentId";
+      when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.deleteById(userId));
+      assertThrows(UserNotFoundException.class, () -> userService.deleteById(userId));
 
-        verify(userRepository, never()).deleteById(anyString());
+      verify(userRepository, never()).deleteById(anyString());
     }
 
     /**
