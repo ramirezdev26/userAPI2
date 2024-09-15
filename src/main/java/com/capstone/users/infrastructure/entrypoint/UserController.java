@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +28,12 @@ public class UserController {
                                        @Parameter(description = "User object") @RequestBody User user) {
         User updatedUser = userService.update(id, user);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @Operation(summary = "User Delete")
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<String> delete(@Parameter(description = "User ID to be deleted") @PathVariable String id) {
+        String response = userService.deleteById(id);
+        return ResponseEntity.ok(response);
     }
 }
