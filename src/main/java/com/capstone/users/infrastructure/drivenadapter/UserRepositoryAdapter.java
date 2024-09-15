@@ -48,12 +48,31 @@ public class UserRepositoryAdapter implements UserRepository {
                 .map(this::mapTo);
     }
 
+    /**
+     * Finds a user by their unique identifier (ID).
+     *
+     * This method interacts with the underlying MySQL repository to search for a user by their ID.
+     * If a user with the provided ID exists in the database, it maps the corresponding UserData entity
+     * into a User domain model and returns it wrapped in an Optional. If no user is found, it returns an empty Optional.
+     *
+     * @param id The unique identifier of the user to find.
+     * @return An Optional containing the User domain model if found, or empty if no user is found with the provided ID.
+     */
     @Override
     public Optional<User> findById(String id) {
         return userMySQLRepository.findById(id)
                 .map(this::mapTo);
     }
 
+    /**
+     * Retrieves all users from the MySQL repository.
+     *
+     * This method fetches all records from the underlying database, converts each UserData entity into a
+     * User domain model, and returns the result as a list. It uses Java Streams to map and collect the
+     * entities into their corresponding domain models.
+     *
+     * @return A List of User domain models representing all users in the system.
+     */
     @Override
     public List<User> findAll() {
         return userMySQLRepository.findAll().stream().map(this::mapTo).collect(Collectors.toList());

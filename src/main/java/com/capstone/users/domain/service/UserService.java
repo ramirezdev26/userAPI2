@@ -46,6 +46,15 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
+  /**
+   * Retrieves all users from the repository.
+   *
+   * This method calls the underlying repository to fetch a list of all User domain models
+   * stored in the system. It does not apply any filters or pagination, returning the full list
+   * of users as provided by the persistence layer.
+   *
+   * @return A List of User objects representing all users in the repository.
+   */
     public List<User> findAll(){
       return  userRepository.findAll();
     }
