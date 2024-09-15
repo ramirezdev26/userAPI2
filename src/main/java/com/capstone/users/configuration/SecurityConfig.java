@@ -14,16 +14,16 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authRequest ->
-                        authRequest
-                                .requestMatchers("api/v1/users/auth/**").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .formLogin(Customizer.withDefaults())
-                .build();
-    }
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authRequest ->
+                    authRequest
+                            .requestMatchers("/api/v1/users/auth/**").permitAll()
+                            .anyRequest().authenticated()
+            )
+            .formLogin(Customizer.withDefaults())
+            .build();
+  }
 }
