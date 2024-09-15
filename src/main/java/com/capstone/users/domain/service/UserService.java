@@ -94,6 +94,27 @@ public class UserService {
     }
 
     /**
+     * Deletes a user by ID from the repository.
+     * Before deleting, it checks if the provided ID is valid and if the user exists in the repository.
+     *
+     * @param id The ID of the user to delete.
+     * @return A success message when the user is deleted successfully.
+     * @throws UserEmptyDataException If the user ID is null or empty.
+     * @throws UserNotFoundException If the user with the given ID does not exist.
+     */
+    public String deleteById(String id) {
+      if (id == null || id.trim().isEmpty()) {
+        ApplicationExceptions.idUserIsNull("User ID cannot be null or empty");
+      }
+      Optional<User> user = userRepository.findById(id);
+      if (user.isEmpty()) {
+        ApplicationExceptions.userNotFoundException();
+      }
+      userRepository.deleteById(id);
+      return "User with ID: " + id + " deleted successfully";
+    }
+
+    /**
      * <p>
      * This method checks that the `name`, `login` and `password` fields
      * of the provided `User` object are not empty or null.

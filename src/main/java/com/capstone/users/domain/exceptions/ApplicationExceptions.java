@@ -31,7 +31,9 @@ public class ApplicationExceptions {
     }
 
     /**
-     * Trows a UserEmptyDataException when some user data is empty (name, login, password).
+     * Throws an InvalidUserDataException when invalid or empty user data is encountered.
+     *
+     * @param message A message describing the specific invalid user data issue.
      */
     public static void userEmptyDataException(String message){throw new UserEmptyDataException(message);}
 
@@ -41,5 +43,16 @@ public class ApplicationExceptions {
      * @throws AuthFailedException when authentication fails
      */
     public static void authFailedException(){throw new AuthFailedException();}
+
+
+    /**
+     * Throws an IllegalArgumentException when the user ID is null.
+     *
+     * @param message A message describing the reason why the user ID is null.
+     */
+    public static void idUserIsNull(String message) {
+        throw new IllegalArgumentException(message);
+    }
+
 }
 
