@@ -10,6 +10,7 @@ import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,7 +26,6 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
     /**
      * Finds a user by their login.
      *
@@ -104,6 +104,27 @@ public class UserService {
         existingUser.setPassword(updatedUser.getPassword());
 
         return userRepository.update(existingUser);
+    }
+
+    /**
+     * Deletes a user by ID from the repository.
+     * Before deleting, it checks if the provided ID is valid and if the user exists in the repository.
+     *
+     * @param id The ID of the user to delete.
+     * @return A success message when the user is deleted successfully.
+     * @throws UserEmptyDataException If the user ID is null or empty.
+     * @throws UserNotFoundException If the user with the given ID does not exist.
+     */
+    public String deleteById(String id) {
+      if (id == null || id.trim().isEmpty()) {
+        ApplicationExceptions.idUserIsNull("User ID cannot be null or empty");
+      }
+      Optional<User> user = userRepository.findById(id);
+      if (user.isEmpty()) {
+        ApplicationExceptions.userNotFoundException();
+      }
+      userRepository.deleteById(id);
+      return "User with ID: " + id + " deleted successfully";
     }
 
     /**

@@ -3,6 +3,7 @@ package com.capstone.users.domain.service;
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
+import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
 import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
@@ -161,7 +162,6 @@ class UserServiceTest {
 
         verifyNoInteractions(userRepository);
     }
-
 
     /**
      * Tests the behavior of {@link UserService#update(String, User)} when user fields are empty.
@@ -343,6 +343,53 @@ class UserServiceTest {
 
         assertTrue(result.isEmpty());
         verify(userRepository, times(1)).findAll();
+    }
+
+
+     /* Tests the behavior of {@link UserService#deleteById(String)} when the user exists.
+     * <p>
+     * Ensures that when a user with the given ID exists in the repository,
+     * the method successfully deletes the user and returns a success message.
+     * The success message should include the ID of the deleted user.
+     */
+    @Test
+    void testDeleteById_WhenUserExists_ShouldDeleteSuccessfullyAndReturnMessage() {
+      String userId = "testId";
+      when(userRepository.findById(userId)).thenReturn(Optional.of(new User("1", "testUser", "testName", "testPassword")));
+
+      String result = userService.deleteById(userId);
+
+      assertEquals("User with ID: " + userId + " deleted successfully", result);
+      verify(userRepository, times(1)).deleteById(userId);
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#deleteById(String)} when the user does not exist.
+     * <p>
+     * Ensures that when a user with the given ID does not exist in the repository,
+     * the method throws a {@link UserNotFoundException} and does not attempt to delete the user.
+     */
+    @Test
+    void testDeleteById_WhenUserDoesNotExist_ShouldThrowUserNotFoundException() {
+      String userId = "nonExistentId";
+      when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+      assertThrows(UserNotFoundException.class, () -> userService.deleteById(userId));
+
+      verify(userRepository, never()).deleteById(anyString());
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#deleteById(String)} when the id is null.
+     * <p>
+     * This test ensures that when the id is null, an IllegalArgumentException is thrown.
+     * It verifies that the repository is not interacted with.
+     */
+    @Test
+    void testDeleteById_WhenIdIsNull_ShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> userService.deleteById(null));
+
+        verifyNoInteractions(userRepository);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.capstone.users.infrastructure.entrypoint.advice;
 
 import com.capstone.users.domain.exceptions.CustomersNotFoundException;
+import com.capstone.users.domain.exceptions.userExceptions.AuthFailedException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
 import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
@@ -44,6 +45,14 @@ public class ApplicationExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex, problem -> {
             problem.setType(URI.create("http://capstone.com/users/user-not-found"));
             problem.setTitle("User Not Found");
+        });
+    }
+
+    @ExceptionHandler(AuthFailedException.class)
+    public ProblemDetail handleException(AuthFailedException ex) {
+        return build(HttpStatus.UNAUTHORIZED, ex, problem -> {
+            problem.setType(URI.create("http://capstone.com/users/auth-failed"));
+            problem.setTitle("Invalid Credentials");
         });
     }
 
