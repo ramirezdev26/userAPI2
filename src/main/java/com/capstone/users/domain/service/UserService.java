@@ -8,6 +8,7 @@ import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,8 +42,21 @@ public class UserService {
      * @param id The ID of the user to find.
      * @return An Optional containing the User if found, or an empty Optional if the user does not exist.
      */
-    public Optional<User> findById(String id) {
-        return userRepository.findById(id);
+    public User findById(String id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+  /**
+   * Retrieves all users from the repository.
+   *
+   * This method calls the underlying repository to fetch a list of all User domain models
+   * stored in the system. It does not apply any filters or pagination, returning the full list
+   * of users as provided by the persistence layer.
+   *
+   * @return A List of User objects representing all users in the repository.
+   */
+    public List<User> findAll(){
+      return  userRepository.findAll();
     }
 
     /**
@@ -80,8 +94,7 @@ public class UserService {
     public User update(String id, User updatedUser) {
        validateUserEmptyData(updatedUser);
 
-       User existingUser = findById(id)
-                .orElseThrow(UserNotFoundException::new);
+       User existingUser = findById(id);
        if (!existingUser.getLogin().equals(updatedUser.getLogin()) && findByLogin(updatedUser.getLogin()).isPresent()) {
             ApplicationExceptions.userAlreadyExistException();
         }

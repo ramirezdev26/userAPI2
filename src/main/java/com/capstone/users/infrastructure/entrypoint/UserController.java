@@ -2,6 +2,7 @@ package com.capstone.users.infrastructure.entrypoint;
 
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.service.UserService;
+import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +34,20 @@ public class UserController {
                                        @Parameter(description = "User object") @RequestBody User user) {
             User updatedUser = userService.update(id, user.toBuilder().password(passwordEncoder.encode(user.getPassword())).build());
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @Operation(summary = "Get User ById")
+    @GetMapping(value = "/get/{id}")
+    public ResponseEntity<User> getUserById(@Parameter(description = "User ID to get the information")@PathVariable String id){
+        User user = userService.findById(id);
+        return ResponseEntity.ok(user);
+    }
+
+    @Operation(summary = "Get all Users")
+    @GetMapping(value = "/get")
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> users = userService.findAll();
+        return ResponseEntity.ok(users);
     }
 
     @Operation(summary = "User Delete")

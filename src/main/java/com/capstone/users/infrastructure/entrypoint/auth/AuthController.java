@@ -40,7 +40,7 @@ public class AuthController {
     /**
      * Handles the registration request and returns a ResponseEntity containing the AuthResponse.
      *
-     * @param Resquest the User object containing the registration data
+     * @param user the User object containing the registration data
      * @return a ResponseEntity containing the AuthResponse
      */
     @Operation(summary = "User Register")

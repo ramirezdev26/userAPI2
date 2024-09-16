@@ -7,6 +7,7 @@ import com.capstone.users.domain.exceptions.userExceptions.UserNotFound;
 import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -273,7 +274,79 @@ class UserServiceTest {
     }
 
     /**
-     * Tests the behavior of {@link UserService#deleteById(String)} when the user exists.
+     * Tests the behavior of {@link UserService#findById(String)} when the user exists.
+     * <p>
+     * This test ensures that when a user with the specified ID exists in the repository,
+     * the method returns the User object.
+     */
+    @Test
+    void TestFindById_WhenUserExists_ShouldReturnUser() {
+        String userId = "userId";
+        User user = User.builder().id(userId).name("testName").login("testLogin").password("testPassword").build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        User result = userService.findById(userId);
+
+        assertNotNull(result);
+        assertEquals(userId, result.getId());
+        verify(userRepository, times(1)).findById(userId);
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#findById(String)} when the user does not exist.
+     * <p>
+     * This test ensures that when no user with the specified ID exists in the repository,
+     * a {@link UserNotFoundException} is thrown.
+     */
+    @Test
+    void TestFindById_WhenUserDoesNotExist_ShouldThrowUserNotFoundException() {
+        String userId = "userId";
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.findById(userId));
+        verify(userRepository, times(1)).findById(userId);
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#findAll()} when users exist.
+     * <p>
+     * This test ensures that when users are present in the repository,
+     * the method returns a non-empty list of User objects.
+     */
+    @Test
+    void TestFindAll_WhenUsersExist_ShouldReturnListOfUsers() {
+        User user1 = User.builder().id("user1").name("testName1").login("testLogin1").password("testPassword1").build();
+        User user2 = User.builder().id("user2").name("testName2").login("testLogin2").password("testPassword2").build();
+
+        when(userRepository.findAll()).thenReturn(List.of(user1, user2));
+
+        List<User> result = userService.findAll();
+
+        assertFalse(result.isEmpty());
+        assertEquals(2, result.size());
+        verify(userRepository, times(1)).findAll();
+    }
+
+    /**
+     * Tests the behavior of {@link UserService#findAll()} when no users exist.
+     * <p>
+     * This test ensures that when there are no users in the repository,
+     * the method returns an empty list.
+     */
+    @Test
+    void TestFindAll_WhenNoUsersExist_ShouldReturnEmptyList() {
+        when(userRepository.findAll()).thenReturn(List.of());
+
+        List<User> result = userService.findAll();
+
+        assertTrue(result.isEmpty());
+        verify(userRepository, times(1)).findAll();
+    }
+
+
+     /* Tests the behavior of {@link UserService#deleteById(String)} when the user exists.
      * <p>
      * Ensures that when a user with the given ID exists in the repository,
      * the method successfully deletes the user and returns a success message.
@@ -318,4 +391,5 @@ class UserServiceTest {
 
         verifyNoInteractions(userRepository);
     }
+
 }
