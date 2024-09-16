@@ -1,5 +1,6 @@
 package com.capstone.users.domain.exceptions;
 
+import com.capstone.users.domain.exceptions.userExceptions.AuthFailedException;
 import com.capstone.users.domain.exceptions.userExceptions.UserAlreadyExistsException;
 import com.capstone.users.domain.exceptions.userExceptions.UserEmptyDataException;
 import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException;
@@ -34,9 +35,15 @@ public class ApplicationExceptions {
      *
      * @param message A message describing the specific invalid user data issue.
      */
-    public static void userEmptyDataException(String message) {
-        throw new UserEmptyDataException(message);
-    }
+    public static void userEmptyDataException(String message){throw new UserEmptyDataException(message);}
+
+    /**
+     * Throws an AuthFailedException when authentication fails.
+     *
+     * @throws AuthFailedException when authentication fails
+     */
+    public static void authFailedException(){throw new AuthFailedException();}
+
 
     /**
      * Throws an IllegalArgumentException when the user ID is null.
@@ -46,5 +53,6 @@ public class ApplicationExceptions {
     public static void idUserIsNull(String message) {
         throw new IllegalArgumentException(message);
     }
+
 }
 
