@@ -27,14 +27,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest ->
                         authRequest
-                                .requestMatchers("api/v1/users/auth/**").permitAll()
-                                .anyRequest().authenticated()
+                            .requestMatchers("api/v1/users/auth/**",  "/swagger-ui/**",
+                                "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                            .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager ->
                     sessionManager
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin(Customizer.withDefaults())
                 .build();
     }
 }
