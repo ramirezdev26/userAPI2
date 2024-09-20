@@ -32,20 +32,26 @@ public class AuthService {
    * @throws AuthenticationException if the authentication fails
    */
   public AuthResponse login(LoginResquest loginResquest) {
+    PwdValidator pwdValidator = new PwdValidator();
+    boolean isAuthenticated;
+    User user = userService.findByLogin(loginResquest.getLogin())
+        .orElseThrow(() -> new RuntimeException("User not found"));
 
-    try {
-      authManager.authenticate(new UsernamePasswordAuthenticationToken(loginResquest.getLogin(), loginResquest.getPassword()));
-    } catch (AuthenticationException e) {
+    if (pwdValidator.isPasswordEncrypted(user.getPassword())) {
+      isAuthenticated = passwordEncoder.matches(loginResquest.getPassword(), user.getPassword());
+    } else {
+      isAuthenticated = user.getPassword().equals(loginResquest.getPassword());
+    }
+    if (!isAuthenticated) {
       ApplicationExceptions.authFailedException();
     }
-    String token = jwtService.getToken(userService.findByLogin(loginResquest.getLogin())
-          .map(userFound -> UserAuth.builder()
-              .id(userFound.getId())
-              .login(userFound.getLogin())
-              .password(userFound.getPassword())
-              .name(userFound.getName())
-              .build())
-          .orElseThrow());
+    String token = jwtService.getToken(UserAuth.builder()
+        .id(user.getId())
+        .login(user.getLogin())
+        .password(user.getPassword())
+        .name(user.getName())
+        .build());
+
     return AuthResponse.builder()
         .token(token)
         .build();
