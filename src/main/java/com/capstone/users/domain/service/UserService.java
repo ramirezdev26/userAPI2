@@ -8,11 +8,10 @@ import com.capstone.users.domain.exceptions.userExceptions.UserNotFoundException
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
-import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

@@ -5,10 +5,7 @@ import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.service.UserService;
 import com.capstone.users.infrastructure.entrypoint.auth.dto.AuthResponse;
 import com.capstone.users.infrastructure.entrypoint.auth.dto.LoginResquest;
-
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
