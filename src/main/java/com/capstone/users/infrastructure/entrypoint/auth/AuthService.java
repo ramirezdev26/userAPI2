@@ -6,6 +6,7 @@ import com.capstone.users.domain.service.UserService;
 import com.capstone.users.infrastructure.entrypoint.auth.dto.AuthResponse;
 import com.capstone.users.infrastructure.entrypoint.auth.dto.LoginResquest;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,36 +26,56 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
 
   /**
-   * Authenticates a user with the provided login request and returns an authentication response containing a JWT token.
+   * Logs in a user with the provided login request and returns an authentication response containing a JWT token.
    *
    * @param  loginResquest  the login request containing the user's login and password
    * @return                an authentication response containing a JWT token
-   * @throws AuthenticationException if the authentication fails
+   * @throws RuntimeException if the user is not found
+   * @throws AuthenticationException if the password does not match the user's password
    */
   public AuthResponse login(LoginResquest loginResquest) {
     PwdValidator pwdValidator = new PwdValidator();
-    boolean isAuthenticated;
     User user = userService.findByLogin(loginResquest.getLogin())
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow();
 
-    if (pwdValidator.isPasswordEncrypted(user.getPassword())) {
-      isAuthenticated = passwordEncoder.matches(loginResquest.getPassword(), user.getPassword());
-    } else {
-      isAuthenticated = user.getPassword().equals(loginResquest.getPassword());
+    if (!pwdValidator.isPasswordEncrypted(user.getPassword()) &&
+        loginResquest.getPassword().equals(user.getPassword())) {
+        updatePassword(user, loginResquest.getPassword());
     }
-    if (!isAuthenticated) {
+
+    try {
+      authManager.authenticate(new UsernamePasswordAuthenticationToken(loginResquest.getLogin(), loginResquest.getPassword()));
+    } catch (AuthenticationException e) {
       ApplicationExceptions.authFailedException();
     }
-    String token = jwtService.getToken(UserAuth.builder()
-        .id(user.getId())
-        .login(user.getLogin())
-        .password(user.getPassword())
-        .name(user.getName())
-        .build());
 
+    String token = jwtService.getToken(userService.findByLogin(loginResquest.getLogin())
+        .map(userFound -> UserAuth.builder()
+            .id(userFound.getId())
+            .login(userFound.getLogin())
+            .password(userFound.getPassword())
+            .name(userFound.getName())
+            .build())
+        .orElseThrow());
     return AuthResponse.builder()
         .token(token)
         .build();
+  }
+
+  /**
+   * Updates the password of a user in the database and returns the updated user object.
+   *
+   * @param  user      the user object whose password needs to be updated
+   * @param  password  the new password to be set for the user
+   * @return           the updated user object with the new password
+   */
+  private User updatePassword(User user, String password) {
+    User updatedUser = User.builder().
+        id(user.getId()).
+        name(user.getName()).
+        login(user.getLogin()).
+        password(passwordEncoder.encode(password)).build();
+    return userService.update(user.getId(), updatedUser);
   }
 
   /**
