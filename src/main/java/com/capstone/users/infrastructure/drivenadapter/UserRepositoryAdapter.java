@@ -3,12 +3,12 @@ package com.capstone.users.infrastructure.drivenadapter;
 import com.capstone.users.domain.exceptions.ApplicationExceptions;
 import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The UserRepositoryAdapter class serves as an adapter between the domain layer and the persistence layer (driven adapter).
