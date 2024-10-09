@@ -29,12 +29,7 @@ public class JwtService {
    * @param user           the user details for the token
    * @return                the generated JWT token
    */
-  private String getToken(Map<String, Object> extraClaims, UserDetails user) {
-    if(!(user instanceof UserAuth userAuth)) {
-      throw new IllegalArgumentException("Invalid users details");
-    }
-    extraClaims.put("userId", userAuth.getId());
-
+  public String getToken(Map<String, Object> extraClaims, UserDetails user) {
     return Jwts
         .builder()
         .setClaims(extraClaims)
