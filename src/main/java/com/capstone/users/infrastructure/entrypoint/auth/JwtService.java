@@ -29,7 +29,7 @@ public class JwtService {
    * @param user           the user details for the token
    * @return                the generated JWT token
    */
-  private String getToken(Map<String, Object> extraClaims, UserDetails user) {
+  public String getToken(Map<String, Object> extraClaims, UserDetails user) {
     return Jwts
         .builder()
         .setClaims(extraClaims)

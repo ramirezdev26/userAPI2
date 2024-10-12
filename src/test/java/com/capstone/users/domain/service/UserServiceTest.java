@@ -98,7 +98,7 @@ class UserServiceTest {
      * Tests the behavior of {@link UserService#save(User)} when the user login does not exist.
      * <p>
      * This test ensures that when saving a user with a unique login, the user is saved successfully
-     * and no exceptions are thrown. It verifies that the userRepository's save method is called with
+     * and no exceptions are thrown. It verifies that the userRepository's  method is called with
      * the correct data.
      */
     @Test
