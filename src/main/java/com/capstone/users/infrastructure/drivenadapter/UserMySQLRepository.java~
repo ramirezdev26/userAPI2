@@ -1,6 +1,6 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -16,6 +16,6 @@ import java.util.Optional;
  * - String: The type of the entity's primary key.
  */
 @Repository
-public interface UserMySQLRepository extends JpaRepository<UserData, String> {
+public interface UserMongoRepository extends MongoRepository<UserData, String> {
     Optional<UserData> findByLogin(String login);
 }

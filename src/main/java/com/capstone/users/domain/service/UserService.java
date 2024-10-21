@@ -9,6 +9,7 @@ import com.capstone.users.domain.model.User;
 import com.capstone.users.domain.model.UserRepository;
 import com.capstone.users.utils.StringUtils;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,8 +73,9 @@ public class UserService {
             ApplicationExceptions.userAlreadyExistException();
         }
 
+        ObjectId randomId = new ObjectId();
         return userRepository.save(user.toBuilder()
-                .id(UUID.randomUUID().toString())
+                .id(randomId.toString())
                 .name(user.getName())
                 .login(user.getLogin())
                 .password(user.getPassword())

@@ -1,0 +1,9 @@
+spring.application.name=users
+
+# MongoDB Configuration
+spring.data.mongodb.host=localhost
+spring.data.mongodb.port=27017
+spring.data.mongodb.database=sd3
+spring.data.mongodb.username=root
+spring.data.mongodb.password=sd5
+spring.data.mongodb.authentication-database=admin

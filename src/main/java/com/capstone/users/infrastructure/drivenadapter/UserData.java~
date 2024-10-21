@@ -1,9 +1,7 @@
 package com.capstone.users.infrastructure.drivenadapter;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
  * The UserData class represents the database entity for user information.
