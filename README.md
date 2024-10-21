@@ -1,93 +1,176 @@
-# java
+# Users API
 
+**A secure and scalable API for managing user data with JWT authentication.**
 
+## Overview
 
-## Getting started
+The **Users API** is a modern, secure, and scalable CRUD API designed for managing user data, built with **Java**. As part of the Capstone Project, this API integrates seamlessly with existing legacy systems while introducing enhanced functionality and security measures, such as **JWT (JSON Web Tokens)** for secure token-based authentication.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+This API provides endpoints for creating, reading, updating, and deleting user information, ensuring secure access and easy extensibility through Clean Architecture principles.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Table of Contents
+1. [Key Features](#key-features)
+2. [Requirements](#requirements)
+3. [API Endpoints](#api-endpoints)
+4. [Authentication](#authentication)
+5. [Folder Structure](#folder-structure)
 
-## Add your files
+## Key Features
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- **CRUD Operations**: Supports creating, reading, updating, and deleting user data.
+- **Legacy Data Compatibility**: Works with existing systems, ensuring smooth migration and integration.
+- **Security**: JWT-based authentication protects sensitive user data and restricts unauthorized access.
+- **API Client Simulation**: An included client simulates CRUD operations, allowing for easy testing.
+- **Java Implementation**: Built using Java, following Clean Architecture for maintainability and scalability.
+## Requirements
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/jala-university1/cohort-2/oficial-es-desarrollo-de-software-3-iso-214.ga.t2.24.m2/secci-n-d/grupo-3/javaCapstone.git
-git branch -M main
-git push -uf origin main
-```
+- **Java 11+**: Ensure you have at least Java 11 installed.
+- **Maven**: For dependency management and building the project.
+- **JWT (JSON Web Tokens)**: For secure, token-based authentication.
+- **Spring Boot**: Framework for building Java-based applications.
+- **Docker**: 
 
-## Integrate with your tools
+## API Endpoints
 
-- [ ] [Set up project integrations](https://gitlab.com/jala-university1/cohort-2/oficial-es-desarrollo-de-software-3-iso-214.ga.t2.24.m2/secci-n-d/grupo-3/javaCapstone/-/settings/integrations)
+- **POST /users**: Create a new user.
+  - Example Request:
+    ```bash
+    curl -X POST http://localhost:8080/users \
+    -H "Content-Type: application/json" \
+    -d '{"username": "johndoe", "password": "password123"}'
+    ```
 
-## Collaborate with your team
+- **GET /users/{id}**: Retrieve details of a specific user by ID.
+  - Example Request:
+    ```bash
+    curl -X GET http://localhost:8080/users/1 \
+    -H "Authorization: Bearer <JWT_TOKEN>"
+    ```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- **PUT /users/{id}**: Update an existing user's details.
+- **DELETE /users/{id}**: Delete a user by ID.
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+Follow these steps to set up and run the **Users API** locally.
+
+### Step 1: Clone the Repository
+
+First, download the project repository from GitLab:
+
+```bash
+git clone https://gitlab.com/jala-university1/cohort-2/oficial-es-desarrollo-de-software-3-iso-214.ga.t2.24.m2/secci-n-d/grupo-3/javaCapstone.git
+```
+
+### Step 2: Switch to the develop Branch
+
+After cloning the repository, change to the develop branch:
+
+```bash
+cd javaCapstone
+git checkout develop
+```
+
+### Step 3: Set Up MySQL Database in Docker
+
+Run the following command to start a MySQL container using Docker:
+
+```bash
+docker run -d --name sd3db -e MYSQL_ROOT_PASSWORD=sd5 -p 3307:3306 mysql
+```
+
+### Step 4: Access the MySQL Container
+
+Once the MySQL container is running, enter the container using the command below:
+
+```bash
+docker exec -it sd3db mysql -u root -p
+```
+
+### Step 5: Create the Database and Users Table
+
+Now, create the database and users table by running the following SQL commands inside the MySQL prompt:
+
+```bash
+CREATE DATABASE sd3;
+USE sd3;
+
+CREATE TABLE `users` (
+  `id` VARCHAR(36) NOT NULL,
+  `name` VARCHAR(200) NOT NULL,
+  `login` VARCHAR(20) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE
+);
+```
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Once the **Users API** is set up and running, you can interact with it through the following steps.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### Step 1: Start the Application
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+After setting up the database and building the application, you can start the application by running:
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```bash
+./grandle run
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## Authentication
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+All API requests must include a valid **JWT** token in the `Authorization` header. Tokens can be obtained via the **/auth/login** endpoint by providing valid login credentials (username and password). 
 
-## License
-For open source projects, say how it is licensed.
+### Example Authentication Request:
+```bash
+curl -X POST http://localhost:8080/auth/login \
+-H "Content-Type: application/json" \
+-d '{"username": "user@example.com", "password": "password123"}'
+```
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### Example Authentication Request:
+
+```bash
+POST /auth/login
+{
+  "username": "user@example.com",
+  "password": "password123"
+}
+```
+
+### Folder Structure
+The folder structure follows the principles of Clean Architecture:
+```plaintext
+src/
+├── main/
+│   ├── java/
+│   │   ├── com/
+│   │   │   ├── example/
+│   │   │   │   ├── domain/                   # Business logic and models layer
+│   │   │   │   │   ├── model/                # Domain models
+│   │   │   │   │   │   ├── modelname/        # Domain name
+│   │   │   │   │   │   │   ├── ModelRecord/  # Model class
+│   │   │   │   │   │   │   ├── ModelRepository/ # Repository interface
+│   │   │   │   │   ├── service/              # Use cases / business logic
+│   │   │   │   ├── infrastructure/           # Frameworks and infrastructure layer
+│   │   │   │   │   ├── drivenadapters/       # Database connections
+│   │   │   │   │   │   ├── modelname/        # Entity representation in DB and model
+│   │   │   │   │   │   │   ├── ModelAdapter/ # Adapter class between repository and service
+│   │   │   │   │   │   │   ├── ModelRepository/ # Repository interface
+│   │   │   │   │   │   │   ├── ModelData/    # Model representation as DB entity
+│   │   │   │   │   ├── entrypoints/          # RESTful controllers and DTOs
+│   │   │   │   │   │   ├── dto/              # DTOs used between adapters and controllers
+│   │   │   │   │   │   ├── controllers REST/ # RESTful controllers
+│   └── resources/
+│       ├── application.xml                   # Repository and other resource configurations
+
+
+```
+
+## Running Tests
+
+Run the following command to execute the unit tests:
+
+```bash
+mvn test
+```
