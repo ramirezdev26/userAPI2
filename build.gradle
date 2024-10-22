@@ -47,6 +47,9 @@ tasks.named('test') {
 }
 
 test {
+	useJUnitPlatform {
+		excludeTags 'integration'
+	}
 	finalizedBy jacocoTestReport // report is always generated after tests run
 }
 jacocoTestReport {
