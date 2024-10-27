@@ -100,7 +100,7 @@ public class AuthService {
             .password(passwordEncoder.encode(request.getPassword()))
         .build());
     return AuthToken.builder()
-        .token(jwtService.getToken(UserAuth.builder()
+        .token(jwtService.getToken(Map.of("userId", user.getId()), UserAuth.builder()
             .id(user.getId())
             .name(user.getName())
             .login(user.getLogin())
